@@ -9,6 +9,9 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final FocusNode _userFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -17,6 +20,13 @@ class _SignInPageState extends State<SignInPage> {
         .signInWithEmailAndPassword(
             email: 'rodmaster@gmail.com', password: '12345678')
         .then((authResult) => print(authResult.user.email));
+  }
+
+  @override
+  void dispose() {
+    _userFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,20 +65,30 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Usuário',
-                      labelStyle: TextStyle(color: Colors.white),
-                      filled: true,
-                      fillColor: Colors.black12,
-                      enabledBorder: UnderlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                  RawKeyboardListener(
+                    focusNode: _userFocusNode,
+                    child: TextFormField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Usuário',
+                        labelStyle: TextStyle(color: Colors.white),
+                        filled: true,
+                        fillColor: Colors.black12,
+                        enabledBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
+                    onKey: (dynamic key) {
+                      if (key.logicalKey.debugName == 'Tab') {
+                        FocusScope.of(context).nextFocus();
+                      }
+                    },
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
+                    focusNode: _passwordFocusNode,
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       labelStyle: TextStyle(color: Colors.white),
